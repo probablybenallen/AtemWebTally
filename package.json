@@ -1,0 +1,16 @@
+{
+  "name": "atemnode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "atem.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "author": "Ben Allen",
+  "license": "MIT",
+  "dependencies": {
+    "atem-connection": "^1.3.0",
+    "socket.io": "^2.3.0"
+  }
+}
