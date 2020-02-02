@@ -1,6 +1,6 @@
 Requires tweaking to work in each individual scenario, but built as a proof of concept
 
-Uses the settings file to select ATEM IP address
+Uses the settings.js file to select ATEM IP address
 
 to start just webpage tally with "npm start" and access it an a webpage on a phone or pc at http://localhost to select your camera number from the dropdown
 
