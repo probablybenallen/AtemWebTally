@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+  <head>
+    <title>OB1 ATEM REMOTE</title>
+    <style>
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+        }
+        
+        .switch input { 
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+        
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+        
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+        
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+        
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+        button {
+            background-color: #2196F3; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 4vh;
+            width: 33.3333vw;
+            height: 20vh;
+            outline-width: 10pt;
+            outline-style: solid;
+            outline-color: black;
+            font-family: fantasy;
+            outline-offset: -5pt;
+        }
+
+        body{
+          margin: 0px;
+          padding: 0px;
+        }
+
+        html {
+          overflow:hidden;
+        }
+
+    </style>
+  </head>
+  <body>
+    <div>
+        <div style="height: 20vh; width: 50vw; text-align: center; vertical-align: 50%;font-family: monospace; line-height: 18vh; font-size: 20pt;">ATEM Remote 1.0</div>
+        <div style="height: 20vh; width: 50vw; position: fixed; top: 0; right: 0;">
+          <div style="position: absolute; bottom: 50%;">
+            Preview
+            <label class="switch">
+                <input type="checkbox" id = "checkbox1">
+                <span class="slider round"></span>
+            </label>
+            Program
+          </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const mapper = [5,6,7,8,1,2,3,0] // c1, c2, c3, c4, c5, c6, gf, blnk
+        const socket = io();
+        var tallypg
+        var tallypv
+          
+        socket.on('update', function(tally){
+            tallypg = tally[0]
+            tallypv = tally[1]
+            updateButtonColour()
+        });
+
+        function updateButtonColour(){
+            console.log("colour updated")
+            for (var i = 0;i < 8; i++) {
+                if (tallypg == mapper[i]){
+                document.getElementById(i).style.backgroundColor =  "red";
+                } else if (tallypv == mapper[i]) {
+                    document.getElementById(i).style.backgroundColor =  "green";
+                } else {
+                    document.getElementById(i).style.backgroundColor = "#2196F3";
+                }
+            }
+        }
+
+          // DRAW ARRAY OF BUTTONS
+        var buttonsList =['1','2','3','4','5', '6', 'GFX', 'Black', 'GFX DSK', 'Cut', 'Fade'];   
+                //the array
+        function printBtn() {
+            for (var i = 0; i < buttonsList.length; i++) {
+                var btn = document.createElement("button");
+                var t = document.createTextNode(buttonsList[i]);
+                btn.appendChild(t);
+                btn.id = i
+                document.body.appendChild(btn);
+                if (i < 8) {
+                    btn.onclick = ControlButtonPressed;
+                }else if (i == 8){
+                    btn.onclick = function () {
+                    socket.emit("dsk");
+                    console.log("DSK");
+                    };
+                } else if (i == 9){
+                    btn.onclick = function () {
+                        socket.emit("cut");
+                        console.log("Cut")
+                    };
+                    btn.style.width = "66.666vw";
+                    btn.style.backgroundColor = "gold";
+                    btn.style.outlineOffset="-10pt";
+                }else if (i == 10){
+                    btn.onclick = function () {
+                        socket.emit("fade");
+                        console.log("Fade")
+                    };
+                    btn.style.width = "33.333vw";
+                    btn.style.backgroundColor = "gold";
+                    btn.style.outlineOffset="-10pt";
+                };;
+                document.body.appendChild(btn);
+            }
+        }
+
+        printBtn()
+
+
+        function ControlButtonPressed() {
+            if (document.getElementById("checkbox1").checked == false){
+                socket.emit("Preview", mapper[this.id]);
+                console.log("Preview " + this.id);
+            } else{
+                socket.emit("Program", mapper[this.id]);
+                console.log("Program " + this.id);
+            }
+        }
+      </script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <title>OB1 ATEM Tally</title>
+  </head>
+  <body>
+    <select id="feedSelector" name="watchTally" onchange="updatePageColour()">
+      <option value="1">Camera 1</option>
+      <option value="2">Camera 2</option>
+      <option value="3">Camera 3</option>
+      <option value="4">Camera 4</option>
+      <option value="5">Camera 5</option>
+      <option value="6">Camera 6</option>
+    </select>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+          const mapper = [0,5,6,7,8,1,2,3,4] //ASSIGN ATEM SOURCES TO YOUR PREFERED ORDER (in this case black, sdi cameras, hdmi cameras, grapihcs sources)     ---    blnk, c1, c2, c3, c4, c5, c6, gf, gk
+          var socket = io();
+          var tallypg
+          var tallypv
+          
+          socket.on('update', function(tally){
+            tallypg = tally[0]
+            tallypv = tally[1]
+            updatePageColour()
+          });
+
+          function updatePageColour(){
+            console.log("colour updated")
+            var feed = document.getElementById("feedSelector").value
+              if (tallypg == mapper[feed]){
+                document.bgColor = "FF0000"
+              } else if (tallypv == mapper[feed]) {
+                document.bgColor = "00FF00"
+              } else {
+                document.bgColor = "000000"
+              }
+          } 
+      </script>
+  </body>
+</html>
