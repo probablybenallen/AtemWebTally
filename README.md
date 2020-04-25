@@ -4,6 +4,8 @@ Uses the settings.js file to select ATEM IP address
 
 to start just webpage tally use "npm start" and access it an a webpage on a phone or pc at http://[SERVERADDRESS] to select your camera number from the dropdown
 
-to start with remote control page "node atem.js -r", access on "http://[SERVERADDRESS]/remote"
+to start with ATEM remote control page "node atem.js -r", access on "http://[SERVERADDRESS]/remote"
 
 index.html uses an labelled array to remap the atem inputs to simple names in whatever order is most usable for camera ops/to match the multiview (i.e. we don't use hdmi cameras much so patch them to later inputs and bump up SDI)
+
+Uses socket.io library so possibilty of expansion to work with wireless arduino units
